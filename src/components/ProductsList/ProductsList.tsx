@@ -1,15 +1,17 @@
 import { useState, useMemo } from "react";
 import type { Product } from "../../types/product.type";
-import { useSelector } from "react-redux";
-import { productsState } from "../../redux/selector";
-import ProductCard from "../ProductCard/ProductCard";
-import Pagination from "../Pagination/Pagination";
 import styles from "./ProductsList.module.scss";
+import Pagination from "../Pagination/Pagination";
+import ProductCard from "../ProductCard/ProductCard";
 
-const ProductsList = () => {
-  const products = useSelector(productsState);
+interface ProductsListProps {
+  products: Product[];
+}
+
+const ProductsList = ({ products }: ProductsListProps) => {
+  const itemsPerPage = 5;
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
 
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;

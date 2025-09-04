@@ -1,0 +1,11 @@
+export const ALL = "all";
+export const NAME_ASC = "nameAsc";
+export const NAME_DESC = "nameDesc";
+export const RECENT = "recent";
+export const OLDEST = "oldest";
+export const MAX_NAME_LENGTH = 30;
+export const MAX_DESCRIPTION_LENGTH = 200;
+export const MIN_PRICE = 0;
+export const NAME = "name";
+export const DESCRIPTION = "description";
+export const PRICE = "price";

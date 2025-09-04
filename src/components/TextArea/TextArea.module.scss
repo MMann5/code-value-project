@@ -32,7 +32,6 @@
   }
 }
 
-// Variants
 .default {
   background-color: white;
   border-color: #e1e5e9;
@@ -63,7 +62,6 @@
   }
 }
 
-// Sizes
 .small {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -82,7 +80,6 @@
   min-height: 120px;
 }
 
-// Custom scrollbar
 .textArea::-webkit-scrollbar {
   width: 6px;
 }

@@ -1,0 +1,128 @@
+.toast {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  min-width: 300px;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  backdrop-filter: blur(10px);
+
+  &.visible {
+    top: 20px;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  &.leaving {
+    top: -100px;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  position: relative;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .icon {
+    color: white;
+  }
+
+  .closeButton {
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.info {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .icon {
+    color: white;
+  }
+
+  .closeButton {
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .toast {
+    left: 16px;
+    right: 16px;
+    transform: none;
+    min-width: auto;
+    max-width: none;
+
+    &.visible {
+      transform: translateY(0);
+    }
+
+    &.leaving {
+      transform: translateY(-20px);
+    }
+  }
+
+  .content {
+    padding: 14px 16px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+}

@@ -1,6 +1,12 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  loadProductsFromStorage,
+  setProductsToLocalStorage,
+} from "../../utils/localStorage";
+import { ALL } from "../../config/keys";
 import { REDUCER } from "../../config/constants";
 import type { Product } from "../../types/product.type";
+import { defaultProducts } from "../../utils/data";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface ProductState {
   products: Product[];
@@ -15,96 +21,11 @@ interface ProductState {
 }
 
 const initialState: ProductState = {
-  products: [
-    {
-      id: 1,
-      name: "Product 1",
-      description: "Description 1",
-      price: 100,
-      creationDate: new Date(),
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      description: "Description 2",
-      price: 200,
-      creationDate: new Date(),
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      description: "Description 3",
-      price: 300,
-      creationDate: new Date(),
-    },
-    {
-      id: 4,
-      name: "Product 4",
-      description: "Description 4",
-      price: 400,
-      creationDate: new Date(),
-    },
-    {
-      id: 5,
-      name: "Product 5",
-      description: "Description 5",
-      price: 100,
-      creationDate: new Date(),
-    },
-    {
-      id: 6,
-      name: "Product 6",
-      description: "Description 6",
-      price: 200,
-      creationDate: new Date(),
-    },
-    {
-      id: 7,
-      name: "Product 7",
-      description: "Description 7",
-      price: 300,
-      creationDate: new Date(),
-    },
-    {
-      id: 8,
-      name: "Product 8",
-      description: "Description 8",
-      price: 400,
-      creationDate: new Date(),
-    },
-    {
-      id: 9,
-      name: "Product 9",
-      description: "Description 9",
-      price: 500,
-      creationDate: new Date(),
-    },
-    {
-      id: 10,
-      name: "Product 10",
-      description: "Description 10",
-      price: 600,
-      creationDate: new Date(),
-    },
-    {
-      id: 11,
-      name: "Product 11",
-      description: "Description 11",
-      price: 700,
-      creationDate: new Date(),
-    },
-    {
-      id: 12,
-      name: "Product 12",
-      description: "Description 12",
-      price: 800,
-      creationDate: new Date(),
-    },
-  ],
+  products: loadProductsFromStorage(),
   filter: {
-    value: "all",
+    value: "",
     sort: {
-      value: "all",
+      value: ALL,
       label: "All",
     },
   },
@@ -117,22 +38,26 @@ const productSlice = createSlice({
   reducers: {
     setProducts(state, action: PayloadAction<Product[]>) {
       state.products = action.payload;
+      setProductsToLocalStorage(state.products);
     },
     setSelectedProduct(state, action: PayloadAction<Product>) {
       state.selectedProduct = action.payload;
     },
     addProduct(state, action: PayloadAction<Product>) {
-      state.products = [...state.products, action.payload];
+      state.products = [action.payload, ...state.products];
+      setProductsToLocalStorage(state.products);
     },
     updateProduct(state, action: PayloadAction<Product>) {
       state.products = state.products.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
+      setProductsToLocalStorage(state.products);
     },
     deleteProduct(state, action: PayloadAction<Product>) {
       state.products = state.products.filter(
         (item) => item.id !== action.payload.id
       );
+      setProductsToLocalStorage(state.products);
     },
     setFilter(
       state,
@@ -143,6 +68,19 @@ const productSlice = createSlice({
     ) {
       state.filter = action.payload;
     },
+    setSearchValue(state, action: PayloadAction<string>) {
+      state.filter.value = action.payload;
+    },
+    setSortOption(
+      state,
+      action: PayloadAction<{ value: string; label: string }>
+    ) {
+      state.filter.sort = action.payload;
+    },
+    resetToDefaultProducts(state) {
+      state.products = defaultProducts;
+      setProductsToLocalStorage(state.products);
+    },
   },
 });
 
@@ -152,6 +90,9 @@ export const {
   addProduct,
   updateProduct,
   deleteProduct,
+  setSearchValue,
+  setSortOption,
+  resetToDefaultProducts,
 } = productSlice.actions;
 
 export default productSlice.reducer;

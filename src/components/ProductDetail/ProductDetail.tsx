@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { selectedProductState } from "../../redux/selector";
 import {
   updateProduct,
+  addProduct,
   setSelectedProduct,
 } from "../../redux/reducer/productReducer";
-import Button from "../../components/Button/Button";
-import Input from "../../components/Input/Input";
-import TextArea from "../../components/TextArea/TextArea";
+import { PAGES } from "../../config/constants";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import type { Product } from "../../types/product.type";
+import { selectedProductState } from "../../redux/selector";
+import { useToast } from "../../context/ToastContext";
+import * as keys from "../../config/keys";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
+import TextArea from "../TextArea/TextArea";
 import logo from "../../assets/product.svg";
 import styles from "./ProductDetail.module.scss";
 
@@ -24,10 +29,12 @@ interface FormErrors {
   price?: string;
 }
 
-const ProductDetail = () => {
+const ProductDetail = ({ onClose }: { onClose?: () => void }) => {
   const dispatch = useDispatch();
-  const selectedProduct = useSelector(selectedProductState);
+  const navigate = useNavigate();
 
+  const selectedProduct = useSelector(selectedProductState);
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     description: "",
@@ -35,9 +42,7 @@ const ProductDetail = () => {
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isDirty, setIsDirty] = useState(false);
 
-  // Mettre à jour le formulaire quand un produit est sélectionné
   useEffect(() => {
     if (selectedProduct) {
       setFormData({
@@ -46,26 +51,31 @@ const ProductDetail = () => {
         price: selectedProduct.price.toString(),
       });
       setErrors({});
-      setIsDirty(false);
+    } else {
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+      });
+      setErrors({});
     }
   }, [selectedProduct]);
 
-  // Validation des champs
   const validateField = (
     name: keyof FormData,
     value: string
   ): string | undefined => {
     switch (name) {
-      case "name":
+      case keys.NAME:
         if (!value.trim()) return "name is required";
-        if (value.length > 30)
+        if (value.length > keys.MAX_NAME_LENGTH)
           return "name cannot be longer than 30 characters";
         break;
-      case "description":
-        if (value.length > 200)
+      case keys.DESCRIPTION:
+        if (value.length > keys.MAX_DESCRIPTION_LENGTH)
           return "description cannot be longer than 200 characters";
         break;
-      case "price":
+      case keys.PRICE:
         if (!value.trim()) return "price is required";
         const numPrice = parseFloat(value);
         if (isNaN(numPrice)) return "price must be a valid number";
@@ -92,38 +102,77 @@ const ProductDetail = () => {
 
   const handleInputChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setIsDirty(true);
 
     const error = validateField(name, value);
-    setErrors((prev) => ({ ...prev, [name]: error }));
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (error) {
+        newErrors[name] = error;
+      } else {
+        delete newErrors[name];
+      }
+      return newErrors;
+    });
   };
 
   const handleSave = () => {
-    if (!selectedProduct || !validateForm()) return;
+    if (!validateForm()) return;
 
-    const updatedProduct: Product = {
-      ...selectedProduct,
-      name: formData.name.trim(),
-      description: formData.description.trim() || undefined,
-      price: parseFloat(formData.price),
-    };
-
-    dispatch(updateProduct(updatedProduct));
-    setIsDirty(false);
+    if (selectedProduct) {
+      const updatedProduct: Product = {
+        ...selectedProduct,
+        name: formData.name.trim(),
+        description: formData.description.trim() || undefined,
+        price: parseFloat(formData.price),
+      };
+      dispatch(updateProduct(updatedProduct));
+      dispatch(setSelectedProduct(null as any));
+      navigate(PAGES.PRODUCTS);
+      showToast("Product updated successfully", "success");
+    } else {
+      const newProduct: Product = {
+        id: Date.now(),
+        name: formData.name.trim(),
+        description: formData.description.trim() || undefined,
+        price: parseFloat(formData.price),
+        creationDate: new Date(),
+      };
+      dispatch(addProduct(newProduct));
+      showToast("Product added successfully", "success");
+    }
+    onClose?.();
   };
 
   const handleCancel = () => {
-    dispatch(setSelectedProduct(null as any));
+    if (selectedProduct) {
+      setFormData({
+        name: selectedProduct.name,
+        description: selectedProduct.description || "",
+        price: selectedProduct.price.toString(),
+      });
+      setErrors({});
+      dispatch(setSelectedProduct(null as any));
+      navigate(PAGES.PRODUCTS);
+    } else {
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+      });
+      setErrors({});
+      onClose?.();
+    }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <img
-          src={logo}
-          alt={selectedProduct.name}
-          className={styles.productImage}
-        />
+        <img src={logo} alt={"product"} className={styles.productImage} />
+        <h2 className={styles.title}>
+          {selectedProduct
+            ? `${selectedProduct.name} Details`
+            : "Add New Product"}
+        </h2>
       </div>
 
       <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
@@ -136,7 +185,7 @@ const ProductDetail = () => {
             type="text"
             value={formData.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
-            placeholder="Nom du produit"
+            placeholder="Product Name"
             variant="default"
             size="medium"
             className={errors.name ? styles.errorInput : ""}
@@ -152,7 +201,7 @@ const ProductDetail = () => {
             id="description"
             value={formData.description}
             onChange={(e) => handleInputChange("description", e.target.value)}
-            placeholder="Description du produit"
+            placeholder="Description"
             variant="default"
             size="medium"
             rows={3}
@@ -199,9 +248,9 @@ const ProductDetail = () => {
             variant="primary"
             size="medium"
             onClick={handleSave}
-            disabled={!isDirty || Object.keys(errors).length > 0}
+            disabled={Object.keys(errors).length > 0}
           >
-            Save
+            {selectedProduct ? "Update" : "Add Product"}
           </Button>
         </div>
       </form>
