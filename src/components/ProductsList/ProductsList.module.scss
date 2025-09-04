@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.noProducts {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+  width: 100%;
+}
+
+.debugInfo {
+  background-color: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.productsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

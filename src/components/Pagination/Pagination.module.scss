@@ -1,0 +1,138 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:hover:not(.disabled) {
+    color: #1f2937;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(.disabled) {
+    transform: translateY(0);
+  }
+
+  &.disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.chevron {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.buttonText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pageInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.currentPage {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.separator {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.totalPages {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.itemsInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.currentItems {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.totalItems {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .pagination {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .navButton {
+    font-size: 0.8rem;
+    gap: 0.25rem;
+  }
+
+  .buttonText {
+    font-size: 0.8rem;
+  }
+
+  .pageInfo {
+    font-size: 0.8rem;
+    min-width: 60px;
+  }
+}
+
+.navButton:not(.disabled) {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #667eea;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}

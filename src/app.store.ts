@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { createLogger } from "redux-logger";
-import { REDUCER } from "./redux/reducer.enum";
+import { REDUCER } from "./config/constants";
 import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from "./redux/reducer/productReducer";
 
@@ -24,8 +24,7 @@ const middleware = (getDefaultMiddleware: any) => {
 
 const store = configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) =>
-    middleware(getDefaultMiddleware).concat(logger),
+  middleware: middleware,
 });
 
 export { store };
