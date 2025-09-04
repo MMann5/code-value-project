@@ -3,7 +3,7 @@ import {
   setSortOption,
 } from "../../redux/reducer/productReducer";
 import { IoMdAdd } from "react-icons/io";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Product } from "../../types/product.type";
 import { useSelector, useDispatch } from "react-redux";
 import { filterState, productsState } from "../../redux/selector";
@@ -77,7 +77,7 @@ const ControlPanels = ({ onFilteredProductsChange }: ControlPanelsProps) => {
     return sortedProducts;
   }, [products, filter.value, filter.sort.value]);
 
-  useMemo(() => {
+  useEffect(() => {
     onFilteredProductsChange(filteredAndSortedProducts);
   }, [filteredAndSortedProducts, onFilteredProductsChange]);
 
