@@ -126,8 +126,7 @@ const ProductDetail = ({ onClose }: { onClose?: () => void }) => {
         price: parseFloat(formData.price),
       };
       dispatch(updateProduct(updatedProduct));
-      dispatch(setSelectedProduct(null as any));
-      navigate(PAGES.PRODUCTS);
+      handleCancel();
       showToast("Product updated successfully", "success");
     } else {
       const newProduct: Product = {
@@ -145,23 +144,16 @@ const ProductDetail = ({ onClose }: { onClose?: () => void }) => {
 
   const handleCancel = () => {
     if (selectedProduct) {
-      setFormData({
-        name: selectedProduct.name,
-        description: selectedProduct.description || "",
-        price: selectedProduct.price.toString(),
-      });
-      setErrors({});
-      dispatch(setSelectedProduct(null as any));
       navigate(PAGES.PRODUCTS);
-    } else {
-      setFormData({
-        name: "",
-        description: "",
-        price: "",
-      });
-      setErrors({});
-      onClose?.();
+      dispatch(setSelectedProduct(null as any));
     }
+    setFormData({
+      name: "",
+      description: "",
+      price: "",
+    });
+    setErrors({});
+    onClose?.();
   };
 
   return (

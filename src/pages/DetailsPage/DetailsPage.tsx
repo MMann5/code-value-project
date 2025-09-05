@@ -26,7 +26,7 @@ const DetailsPage = () => {
       );
       dispatch(setSelectedProduct(product as Product));
     }
-  }, [params?.id, products]);
+  }, [params?.id]);
 
   const handleFilteredProductsChange = (products: Product[]) => {
     setFilteredProducts(products);
